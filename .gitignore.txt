@@ -1,0 +1,6 @@
+__pycacche__
+*.pyc
+db.sqlite3
+venv
+.vscode/
+ wishlist-2d71a0f0d7ed.json

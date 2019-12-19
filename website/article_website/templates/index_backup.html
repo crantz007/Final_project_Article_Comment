@@ -1,0 +1,153 @@
+<html>
+{% load app_tags %}
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title> {% block title %} Welcome to MyNewsPaper {% endblock %} </title>
+    <link href="/static/bootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/blog-post.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/static/icon.png" />
+    <script src="/static/bootstrap/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            $('.fb-share').click(function(e)
+            {
+                e.preventDefault();
+                window.open($(this).attr('href'), 'fbShareWindow', 'height=450, width=550, top=' + ($(window).height() / 2 - 275) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+                return false;
+            });
+        });
+    </script>
+
+
+  </head>
+
+  <body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="site_navbar">
+      <div class="container">
+        <a class="navbar-brand" id="site_brand" href="/">Welcome to MyNewsPaper</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+              {% for category in categories %}
+              <li class="nav-item">
+              <a class="nav-link" href="/categories/{{category.title}}">{{category.title|capitalize}}</a>
+              </li>
+              {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="container">
+
+      <div class="row">
+
+          {% block content %}
+          <div class="col-lg-8">
+              <br>
+              <b><h1 class="mt-4" >Le {{time}}</h1></b> <br>
+              {% for element in posts_per_categories %}
+              <h5 style="cursor:pointer;" class="card-header" data-toggle="collapse" data-target="#{{element.0}}">Articles in {{element.0|capitalize}}</h5>
+              <br> <br>
+              <div class="collapse show"  id="{{element.0}}">
+                  {% for article in element.1 %}
+                  <div class="card">
+                      <div class="card-body">
+                          <table border="0">
+                              <tr>
+                                  <td width="25%">
+                                      {% if article.image %}
+                                      <img width="25%" height="70px" src="{{article.image.url}}" alt="">
+                                      {% else %}
+                                      <img width="25%" height="70px" src="/static/no-fees-icon-B.png" alt="">
+                                      {% endif %}
+                                  </td>
+                                  <td>
+                                      <h5 class="card-title">{{article.title}}</h5>
+                                      <h6 class="card-subtitle mb-2 text-muted">{{article.date|date:'d-m-Y H:i'}}</h6>
+                                      <p class="card-text">{{article.resume}}</p>
+                                      <a href="{% url 'article' article.id %}" class="card-link">displays</a>
+                                  </td>
+                              </tr>
+                          </table>
+                      </div>
+                  </div> <br> <br>
+                  {% endfor %}
+              </div>
+              {% endfor %}
+
+          </div>
+          {% endblock %}
+
+          <div class="col-md-4">
+              <div class="card my-4">
+                  <h5 class="card-header">search</h5>
+                  <div class="card-body">
+                      <div class="input-group">
+                          <form action="/search/" method="POST">
+                              {% csrf_token %}
+                              <input type="text" id="id_keywords" name="keywords" class="form-control" required="required" placeholder="Recherche sur..."><br>
+                              <span class="input-group-btn">
+                                  <button type="submit" class="btn btn-secondary" type="button">SEARCH</button>
+                              </span>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+              <div class="card my-4">
+                  <h5 class="card-header">Last Articles</h5>
+                  <div class="card-body">
+                      <div class="row">
+                          <ul style="list-style: none;">
+                              {% for article in last_articles %}
+                              <li> <a href="{% url 'article' article.id %}">{{ article.title }}</a> </li>
+                              {% endfor %}
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="card my-4">
+                  <h5 class="card-header"> Popular Articles</h5>
+                  <div class="card-body">
+                      <div class="row">
+                          <ul style="list-style: none;">
+                              {% for article in popular_articles %}
+                              <li> <a href="{% url 'article' article.id %}">{{ article.title }}</a> </li>
+                              {% endfor %}
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+
+
+
+      </div>
+
+
+    </div>
+
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; MyNewsPaper 2019</p>
+      </div>
+    </footer>
+
+  </body>
+
+</html>

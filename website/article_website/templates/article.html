@@ -1,0 +1,47 @@
+
+{% extends 'index.html' %}
+
+{% load app_tags %}
+
+{% block title %} {{ article.title }} {% endblock %}
+
+{% block content %}
+
+<div class="col-lg-8">
+    <h1 class="mt-4"> {{article.title}}</h1>
+    <!-- Date/Time -->
+    <p>Posted {{article.date|date:'d-m-Y H:i'}}, on {{article.category.title|capitalize }}</p> <hr>
+    {% if article.image %}
+    <img class="img-fluid" src="{{article.image.url}}">
+    {% endif %} <br> <br>
+    {{article.content|safe}}
+    <!--<a class="fb-share" href="https://www.facebook.com/sharer/sharer.php?u={{request.build_absolute_uri}}" target="_blank"> <br> Share </a> <br> <br>-->
+    <a class="fb-share" href="https://www.facebook.com/sharer/sharer.php?u=www.google.com" target="_blank"> <br> Share </a> <br> <br>
+    <h5>Comments List</h5> <br>
+
+    {% for comment in comments %}
+    <div class="media mb-4">
+        <img class="d-flex mr-3 rounded-circle" src="/static/user.png" alt="">
+        <div class="media-body">
+            <h5 class="mt-0">{{comment.visitor_name}}, on {{comment.date|date:'d-m-Y H:i' }}</h5>
+            <div class="post_content">{{comment.content}} </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- Comments Form -->
+    <div class="card my-4">
+        <h5 class="card-header">Type a Comment</h5>
+        <div class="card-body">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" id="id_visitor_name" name="visitor_name" class="form-control" placeholder="Your Name" required="required">
+                    <input type="text" id="id_visitor_email" name="visitor_email" type="email" class="form-control" placeholder="Your email" required="required">
+                    <textarea id="id_content" name="content" class="form-control" rows="3" required="required"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
